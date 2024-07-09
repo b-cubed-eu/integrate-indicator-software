@@ -144,16 +144,19 @@ ggplot() +
 We add a taxon name and save the cube (dataframe) as a CSV file so we can try and load id with `b3gbi::process_cube()`.
 
 ```{r}
+data_path <- here::here("data", "raw")
+dir.create(data_path, showWarnings = FALSE, recursive = TRUE)
+
 occurrence_cube_df %>%
   st_drop_geometry() %>%
   mutate(species = "species1",
          species_key = "s1") %>%
-  write_delim("gcube_df.csv", delim = "\t", na = "")
+  write_delim(file.path(data_path, "gcube_df.csv"), delim = "\t", na = "")
 ```
 
 ```{r}
 gcube_data <- process_cube(
-  cube_name = "gcube_df.csv",
+  cube_name = file.path(data_path, "gcube_df.csv"),
   grid_type = "eea",
   force_gridcode = TRUE,
   cols_year = "time_point",
