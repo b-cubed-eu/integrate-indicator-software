@@ -25,7 +25,22 @@ library(sf)        # Working with spatial objects
 library(tidyverse) # Data wrangling and visualisation
 ```
 
+# Introduction
 
+We install b3gbi package version 0.2.1 and gcube version 0.0.1.
+We can simulate biodiversity data cubes with gcube and afterwards calculate general indicators with the b3gbi package.
+
+**Why do we want this integration?**
+
+The goal of gcube is to provide a simulation framework for biodiversity data cubes.
+Simulation studies offer numerous benefits due to their ability to mimic real-world scenarios in controlled and customizable environments.
+This allows researchers to model and understand the complexity of ecological systems by varying parameters such as spatial and/or temporal clustering, species prevalence, etc.
+
+The output of gcube is a datacube.
+Varying the different parameters provides insights on the factors influencing final data cube structure, but this does not inform us about its influence on statistics calculated further upstream (i.e. indicators based on these biodiversity data cubes).
+
+b3gbi is an R package that provides functions that calculate general biodiversity indicators from data cubes.
+Linking the output of simulated cubes from gcube into the b3gbi workflow is thus an essential step in the investigation of the effects of different data cube parameters on final estimated statistics and trends.
 
 # Input for b3gbi
 
