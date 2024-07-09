@@ -80,6 +80,7 @@ polygon <- st_polygon(list(cbind(c(5, 10, 8, 2, 3, 5), c(2, 1, 7, 9, 5, 2))))
 # Simulate occurrences within polygon
 occurrences_df <- simulate_occurrences(
   plgn = polygon,
+  n_time_points = 4,
   seed = 123)
 
 # Detect occurrences
@@ -122,22 +123,13 @@ occurrence_cube_df <- grid_designation(
   grid = grid_df,
   seed = 123)
 
-# Get sampled points within uncertainty circle
-sampled_points <- grid_designation(
-  observations = observations_df,
-  grid = grid_df,
-  aggregate = FALSE,
-  seed = 123)
-
 # Visualise grid designation
 ggplot() +
   geom_sf(data = occurrence_cube_df, linewidth = 1) +
   geom_sf_text(data = occurrence_cube_df, aes(label = n)) +
-  geom_sf(data = buffered_observations,
-          fill = alpha("firebrick", 0.3)) +
-  geom_sf(data = sampled_points, colour = "blue") +
-  geom_sf(data = observations_df, colour = "firebrick") +
-  labs(x = "", y = "", fill = "n") +
+  facet_wrap(~time_point) +
+  labs(x = "", y = "", fill = "n",
+       title = "Data cube for 1 species over multiple time points") +
   theme_minimal()
 ```
 
@@ -168,4 +160,6 @@ gcube_data <- process_cube(
   )
 ```
 
-> You can only choose specific grid types. But why is this necessary? You can calculate indicators on this either way and you can visualise if you do not drop the geometry.
+> Should be able to use a custom grid_type with forced gridcode. Now metadata is wrong.
+
+> This code does not work if you have only 1 time point.
