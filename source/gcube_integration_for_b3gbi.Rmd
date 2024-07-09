@@ -27,7 +27,7 @@ library(tidyverse) # Data wrangling and visualisation
 
 # Introduction
 
-We install b3gbi package version 0.2.1 and gcube version 0.0.1.
+We install the [b3gbi](https://github.com/b-cubed-eu/b3gbi/) (version 0.2.1) and [gcube](https://github.com/b-cubed-eu/gcube) (version 0.0.1) packages.
 We can simulate biodiversity data cubes with gcube and afterwards calculate general indicators with the b3gbi package.
 
 **Why do we want this integration?**
