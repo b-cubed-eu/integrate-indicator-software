@@ -158,8 +158,26 @@ gcube_data <- process_cube(
   cols_minCoordinateUncertaintyInMeters = "min_coord_uncertainty",
   cols_speciesKey = "species_key"
   )
+
+gcube_data
 ```
 
 > Should be able to use a custom grid_type with forced grid code. Now metadata is wrong.
 
 > This code does not work if you have only 1 time point.
+
+We can try and calculate an indicator.
+A spatial indicator will not work since we do not have the right spatial metadata.
+We try a time series indicator.
+
+```{r, eval=FALSE}
+total_occ_ts(gcube_data)
+```
+
+```{r, echo=FALSE}
+try(expr = total_occ_ts(gcube_data))
+```
+
+This throws an error by `check_cell_size()`.
+
+> Why do we need to know the spatial resolution for a temporal indicator?
