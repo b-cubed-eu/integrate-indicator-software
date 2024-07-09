@@ -1,0 +1,153 @@
+---
+title: "Integration of gcube output as input for b3gbi"
+author: "Ward Langeraert"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    code_folding: show
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, warning=FALSE, message=FALSE}
+# Load packages
+library(gcube)     # Simulate biodiversity data cubes
+library(b3gbi)     # Calculate general indicators for biodiversity data cubes 
+
+library(sf)        # Working with spatial objects
+library(tidyverse) # Data wrangling and visualisation
+```
+
+
+
+# Input for b3gbi
+
+The input for the b3gbi package is the location of a csv file.
+
+```{r}
+# Load GBIF data cube
+cube_name <- system.file("extdata", "europe_insect_cube.csv", package = "b3gbi")
+
+# Load taxonomic info for cube
+tax_info <- system.file("extdata", "europe_insect_info.csv", package = "b3gbi")
+
+insect_data_df <- read.csv(cube_name)
+head(insect_data_df)
+```
+
+We process the cube.
+
+```{r}
+# Prepare cube
+insect_data <- process_cube_old(cube_name, tax_info)
+
+insect_data
+```
+
+The function `process_cube_old()` seems rather strict regarding the column names.
+The new `process_cube()` function is more flexible in this sense.
+
+> For an efficient workflow. These functions should also allow R dataframes as input.
+
+Let's create a cube with gcube.
+
+```{r}
+# Create a polygon to simulate occurrences
+polygon <- st_polygon(list(cbind(c(5,10,8,2,3,5), c(2,1,7,9,5,2))))
+
+# Simulate occurrences within polygon
+occurrences_df <- simulate_occurrences(
+  plgn = polygon,
+  seed = 123)
+
+# Detect occurrences
+detections_df_raw <- sample_observations(
+  occurrences = occurrences_df,
+  detection_probability = 0.5,
+  seed = 123)
+
+# Select detected occurrences only
+detections_df <- detections_df_raw %>%
+  dplyr::filter(sampling_status == "detected")
+
+# Add coordinate uncertainty
+set.seed(123)
+coord_uncertainty_vec <- rgamma(nrow(detections_df), shape = 2, rate = 6)
+observations_df <- add_coordinate_uncertainty(
+  observations = detections_df,
+  coords_uncertainty_meters = coord_uncertainty_vec)
+
+# Created and sf object with uncertainty circles to visualise
+buffered_observations <- st_buffer(
+  observations_df,
+  observations_df$coordinateUncertaintyInMeters)
+
+# Define a grid over spatial extend
+grid_df <- st_make_grid(
+    buffered_observations,
+    square = TRUE,
+    cellsize = c(1.2, 1.2)
+  ) %>%
+  st_sf() %>%
+  mutate(intersect = as.vector(st_intersects(geometry, polygon,
+                                             sparse = F))) %>%
+  dplyr::filter(intersect == TRUE) %>%
+  dplyr::select(-"intersect")
+
+# Create occurrence cube
+occurrence_cube_df <- grid_designation(
+  observations = observations_df,
+  grid = grid_df,
+  seed = 123)
+
+# Get sampled points within uncertainty circle
+sampled_points <- grid_designation(
+  observations = observations_df,
+  grid = grid_df,
+  aggregate = FALSE,
+  seed = 123)
+
+# Visualise grid designation
+ggplot() +
+  geom_sf(data = occurrence_cube_df, linewidth = 1) +
+  geom_sf_text(data = occurrence_cube_df, aes(label = n)) +
+  geom_sf(data = buffered_observations,
+          fill = alpha("firebrick", 0.3)) +
+  geom_sf(data = sampled_points, colour = "blue") +
+  geom_sf(data = observations_df, colour = "firebrick") +
+  labs(x = "", y = "", fill = "n") +
+  theme_minimal()
+```
+
+We add a taxon name and save the cube (dataframe) as a csv file so we can try and load id with `b3gbi::process_cube()`.
+
+```{r}
+occurrence_cube_df %>%
+  st_drop_geometry() %>%
+  mutate(species = "species1",
+         species_key = "s1") %>%
+  write_delim("gcube_df.csv", delim = "\t", na = "")
+```
+
+```{r}
+gcube_data <- process_cube(
+  cube_name = "gcube_df.csv",
+  grid_type = "eea",
+  force_gridcode = TRUE,
+  cols_year = "time_point",
+  cols_cellCode = "id",
+  cols_occurrences = "n",
+  cols_scientificName = "species",
+  cols_minCoordinateUncertaintyInMeters = "min_coord_uncertainty",
+  cols_speciesKey = "species_key"
+  )
+```
+
+> You can only choose specific grid types. But why is this necessary? You can calculate indicators on this either way and you can visualise if you do not drop the geometry.
