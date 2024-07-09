@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it using these metadata.
+title: "Integrate and streamline indicator software"
+authors:
+- given-names: Ward
+  family-names: Langeraert
+  affiliation: Research Institute for Nature and Forest (INBO), Herman Teirlinckgebouw,
+    Havenlaan 88 PO Box 73, B-1000 Brussels, Belgium
+  orcid: 0000-0002-5900-8109
+- given-names: Toon
+  family-names: Van Daele
+  affiliation: Research Institute for Nature and Forest (INBO), Herman Teirlinckgebouw,
+    Havenlaan 88 PO Box 73, B-1000 Brussels, Belgium
+  orcid: 0000-0002-1362-853X
+keywords:
+- R packages
+- software integration
+- software streamlining
+- biodiversity indicators
+- data cubes
+contact:
+- given-names: Ward
+  family-names: Langeraert
+  affiliation: Research Institute for Nature and Forest (INBO), Herman Teirlinckgebouw,
+    Havenlaan 88 PO Box 73, B-1000 Brussels, Belgium
+  orcid: 0000-0002-5900-8109
+doi: ~
+license: CC-BY-4.0
+repository-code: https://github.com/b-cubed-eu/integrate-indicator-software/
+type: software
+abstract: "Scripts to explore the streamlining and integration of software (with focus
+  on R packages) related to the calculation of indicators based on biodiversity data
+  cubes."

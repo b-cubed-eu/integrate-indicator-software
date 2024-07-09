@@ -1,0 +1,44 @@
+{
+  "access_right": "open",
+  "title": "Integrate and streamline indicator software",
+  "description": "<p>Scripts to explore the streamlining and integration of software (with focus on R packages) related to the calculation of indicators based on biodiversity data cubes.<\/p>",
+  "keywords": [
+    "R packages",
+    "software integration",
+    "software streamlining",
+    "biodiversity indicators",
+    "data cubes"
+  ],
+  "upload_type": "software",
+  "license": "CC-BY-4.0",
+  "language": "eng",
+  "contributors": [
+    {
+      "name": "Langeraert, Ward",
+      "affiliation": "Research Institute for Nature and Forest (INBO), Herman Teirlinckgebouw, Havenlaan 88 PO Box 73, B-1000 Brussels, Belgium",
+      "orcid": "0000-0002-5900-8109",
+      "type": "contactperson"
+    },
+    {
+      "name": "Research Institute for Nature and Forest (INBO)",
+      "type": "rightsholder"
+    }
+  ],
+  "creators": [
+    {
+      "name": "Langeraert, Ward",
+      "affiliation": "Research Institute for Nature and Forest (INBO), Herman Teirlinckgebouw, Havenlaan 88 PO Box 73, B-1000 Brussels, Belgium",
+      "orcid": "0000-0002-5900-8109"
+    },
+    {
+      "name": "Van Daele, Toon",
+      "affiliation": "Research Institute for Nature and Forest (INBO), Herman Teirlinckgebouw, Havenlaan 88 PO Box 73, B-1000 Brussels, Belgium",
+      "orcid": "0000-0002-1362-853X"
+    }
+  ],
+  "communities": [
+    {
+      "identifier": "b3"
+    }
+  ]
+}
