@@ -32,26 +32,26 @@ This code is developed in context of **T5.5** of the [B-Cubed project](https://b
 ### Repo structure
 
 ```
-├── source                         ├ R markdown files
-│   └── scripts                    ├ R scripts
+├── source                                ├ R markdown files
+│   └── scripts                           ├ R scripts
 ├── data
-│   ├── raw                        ├ store raw data
-│   ├── intermediate               ├ store intermediate data
-│   └── processed                  ├ store processed data
-├── checklist.yml                  ├ options checklist package (https://github.com/inbo/checklist)
-├── organisation.yml               ├ organisation info (https://inbo.github.io/checklist/articles/organisation.html)
+│   ├── raw                               ├ store raw data
+│   ├── intermediate                      ├ store intermediate data
+│   └── processed                         ├ store processed data
+├── checklist.yml                         ├ options checklist package (https://github.com/inbo/checklist)
+├── organisation.yml                      ├ organisation info (https://inbo.github.io/checklist/articles/organisation.html)
 ├── inst
-│   └── en_gb.dic                  ├ dictionary with words that should not be checked by the checklist package
-├── .github                        │ 
-│   ├── workflows                  │ 
-│   │   └── checklist_project.yml  ├ GitHub repo settings
-│   ├── CODE_OF_CONDUCT.md         │ 
-│   └── CONTRIBUTING.md            │
-├── indicator-uncertainty.Rproj    ├ R project
-├── README.md                      ├ project description
-├── LICENSE.md                     ├ licence
-├── LICENSE                        │
-├── CITATION.cff                   ├ citation info
-├── .zenodo.json                   ├ zenodo metadata
-└── .gitignore                     ├ files to ignore
+│   └── en_gb.dic                         ├ dictionary with words that should not be checked by the checklist package
+├── .github                               │ 
+│   ├── workflows                         │ 
+│   │   └── checklist_project.yml         ├ GitHub repo settings
+│   ├── CODE_OF_CONDUCT.md                │ 
+│   └── CONTRIBUTING.md                   │
+├── integrate-indicator-software.Rproj    ├ R project
+├── README.md                             ├ project description
+├── LICENSE.md                            ├ licence
+├── LICENSE                               │
+├── CITATION.cff                          ├ citation info
+├── .zenodo.json                          ├ zenodo metadata
+└── .gitignore                            ├ files to ignore
 ```
