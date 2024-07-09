@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, warning=FALSE, message=FALSE}
 # Load packages
 library(gcube)     # Simulate biodiversity data cubes
-library(b3gbi)     # Calculate general indicators for biodiversity data cubes 
+library(b3gbi)     # Calculate general indicators for biodiversity data cubes
 
 library(sf)        # Working with spatial objects
 library(tidyverse) # Data wrangling and visualisation
@@ -36,7 +36,7 @@ The goal of gcube is to provide a simulation framework for biodiversity data cub
 Simulation studies offer numerous benefits due to their ability to mimic real-world scenarios in controlled and customizable environments.
 This allows researchers to model and understand the complexity of ecological systems by varying parameters such as spatial and/or temporal clustering, species prevalence, etc.
 
-The output of gcube is a datacube.
+The output of gcube is a data cube.
 Varying the different parameters provides insights on the factors influencing final data cube structure, but this does not inform us about its influence on statistics calculated further upstream (i.e. indicators based on these biodiversity data cubes).
 
 b3gbi is an R package that provides functions that calculate general biodiversity indicators from data cubes.
@@ -44,7 +44,7 @@ Linking the output of simulated cubes from gcube into the b3gbi workflow is thus
 
 # Input for b3gbi
 
-The input for the b3gbi package is the location of a csv file.
+The input for the b3gbi package is the location of a CSV file.
 
 ```{r}
 # Load GBIF data cube
@@ -75,7 +75,7 @@ Let's create a cube with gcube.
 
 ```{r}
 # Create a polygon to simulate occurrences
-polygon <- st_polygon(list(cbind(c(5,10,8,2,3,5), c(2,1,7,9,5,2))))
+polygon <- st_polygon(list(cbind(c(5, 10, 8, 2, 3, 5), c(2, 1, 7, 9, 5, 2))))
 
 # Simulate occurrences within polygon
 occurrences_df <- simulate_occurrences(
@@ -112,7 +112,7 @@ grid_df <- st_make_grid(
   ) %>%
   st_sf() %>%
   mutate(intersect = as.vector(st_intersects(geometry, polygon,
-                                             sparse = F))) %>%
+                                             sparse = FALSE))) %>%
   dplyr::filter(intersect == TRUE) %>%
   dplyr::select(-"intersect")
 
@@ -141,7 +141,7 @@ ggplot() +
   theme_minimal()
 ```
 
-We add a taxon name and save the cube (dataframe) as a csv file so we can try and load id with `b3gbi::process_cube()`.
+We add a taxon name and save the cube (dataframe) as a CSV file so we can try and load id with `b3gbi::process_cube()`.
 
 ```{r}
 occurrence_cube_df %>%
