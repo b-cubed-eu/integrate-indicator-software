@@ -160,6 +160,6 @@ gcube_data <- process_cube(
   )
 ```
 
-> Should be able to use a custom grid_type with forced gridcode. Now metadata is wrong.
+> Should be able to use a custom grid_type with forced grid code. Now metadata is wrong.
 
 > This code does not work if you have only 1 time point.
