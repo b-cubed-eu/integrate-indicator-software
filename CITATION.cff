@@ -25,7 +25,7 @@ contact:
     Havenlaan 88 PO Box 73, B-1000 Brussels, Belgium
   orcid: 0000-0002-5900-8109
 doi: ~
-license: CC-BY-4.0
+license: MIT
 repository-code: https://github.com/b-cubed-eu/integrate-indicator-software/
 type: software
 abstract: "Scripts to explore the streamlining and integration of software (with focus
