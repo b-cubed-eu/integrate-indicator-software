@@ -219,3 +219,91 @@ This throws an error by `check_cell_size()`.
 # b3gbi version 0.2.3
 
 Review for [this pull request](https://github.com/b-cubed-eu/b3gbi/pull/25).
+We install the [b3gbi](https://github.com/b-cubed-eu/b3gbi/) (version 0.2.3) and [gcube](https://github.com/b-cubed-eu/gcube) (version 0.1.0) packages.
+
+```{r}
+## Create cube with gcube (4 time points, 1 species)
+# Create a polygon to simulate occurrences
+polygon <- st_polygon(list(cbind(c(5, 10, 8, 2, 3, 5), c(2, 1, 7, 9, 5, 2))))
+
+# Simulate occurrences within polygon
+occurrences_df <- simulate_occurrences(
+  plgn = polygon,
+  n_time_points = 4,
+  seed = 123)
+#> [using unconditional Gaussian simulation]
+
+# Detect occurrences
+detections_df_raw <- sample_observations(
+  occurrences = occurrences_df,
+  detection_probability = 0.5,
+  seed = 123)
+
+# Select detected occurrences only
+detections_df <- detections_df_raw %>%
+  dplyr::filter(sampling_status == "detected")
+
+# Add coordinate uncertainty
+set.seed(123)
+coord_uncertainty_vec <- rgamma(nrow(detections_df), shape = 2, rate = 6)
+observations_df <- add_coordinate_uncertainty(
+  observations = detections_df,
+  coords_uncertainty_meters = coord_uncertainty_vec)
+
+# Created and sf object with uncertainty circles to visualise
+buffered_observations <- st_buffer(
+  observations_df,
+  observations_df$coordinateUncertaintyInMeters)
+
+# Define a grid over spatial extend
+grid_df <- st_make_grid(
+  buffered_observations,
+  square = TRUE,
+  cellsize = c(1.2, 1.2)
+) %>%
+  st_sf() %>%
+  mutate(intersect = as.vector(st_intersects(geometry, polygon,
+                                             sparse = FALSE))) %>%
+  dplyr::filter(intersect == TRUE) %>%
+  dplyr::select(-"intersect")
+
+# Create occurrence cube
+occurrence_cube_df <- grid_designation(
+  observations = observations_df,
+  grid = grid_df,
+  seed = 123)
+
+# Visualise grid designation
+ggplot() +
+  geom_sf(data = occurrence_cube_df, linewidth = 1) +
+  geom_sf_text(data = occurrence_cube_df, aes(label = n)) +
+  facet_wrap(~time_point) +
+  labs(x = "", y = "", fill = "n",
+       title = "Data cube for 1 species over multiple time points") +
+  theme_minimal()
+```
+
+Write out data and process cube.
+
+```{r}
+occurrence_cube_df %>%
+  st_drop_geometry() %>%
+  mutate(species = "species1",
+         species_key = "s1") %>%
+  write_delim("./data/raw/gcube_df.csv", delim = "\t", na = "")
+
+## Process cube with b3gbi
+gcube_data <- process_cube(
+  cube_name = "./data/raw/gcube_df.csv",
+  grid_type = "eea",
+  force_gridcode = TRUE,
+  cols_year = "time_point",
+  cols_cellCode = "id",
+  cols_occurrences = "n",
+  cols_scientificName = "species",
+  cols_minCoordinateUncertaintyInMeters = "min_coord_uncertainty",
+  cols_speciesKey = "species_key"
+)
+gcube_data
+```
+
