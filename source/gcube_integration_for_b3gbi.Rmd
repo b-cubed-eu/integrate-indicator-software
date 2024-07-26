@@ -294,7 +294,8 @@ gcube_data
 total_occ_ts(gcube_data)
 ```
 
-reprex
+reprex:
+
 ```r
 library(dplyr)
 #> 
