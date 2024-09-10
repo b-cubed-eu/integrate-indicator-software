@@ -276,7 +276,7 @@ This time we do not write out a csv, but we use the dataframe to process the cub
 # Process cube with b3gbi
 gcube_data <- process_cube(
   cube_name = map_occ_cube_df,
-  grid_type = "none",
+  grid_type = "custom",
   cols_year = "time_point",
   cols_cellCode = "id",
   cols_occurrences = "n",
