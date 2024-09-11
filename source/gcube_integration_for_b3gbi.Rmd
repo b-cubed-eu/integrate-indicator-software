@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r, warning=FALSE, message=FALSE}
-# Load packages
+## Load packages
 library(gcube)     # Simulate biodiversity data cubes
 library(b3gbi)     # Calculate general indicators for biodiversity data cubes
 
@@ -27,10 +27,9 @@ library(tidyverse) # Data wrangling and visualisation
 
 # Introduction
 
-We install the [b3gbi](https://github.com/b-cubed-eu/b3gbi/) (version 0.2.1) and [gcube](https://github.com/b-cubed-eu/gcube) (version 0.0.1) packages.
-We can simulate biodiversity data cubes with gcube and afterwards calculate general indicators with the b3gbi package.
+We want to simulate biodiversity data cubes with [gcube](https://github.com/b-cubed-eu/gcube) and afterwards calculate general indicators with the [b3gbi](https://github.com/b-cubed-eu/b3gbi/) package.
 
-**Why do we want this integration?**
+*Why do we want this integration?*
 
 The goal of gcube is to provide a simulation framework for biodiversity data cubes.
 Simulation studies offer numerous benefits due to their ability to mimic real-world scenarios in controlled and customizable environments.
@@ -42,7 +41,11 @@ Varying the different parameters provides insights on the factors influencing fi
 b3gbi is an R package that provides functions that calculate general biodiversity indicators from data cubes.
 Linking the output of simulated cubes from gcube into the b3gbi workflow is thus an essential step in the investigation of the effects of different data cube parameters on final estimated statistics and trends.
 
-# Input for b3gbi
+# b3gbi version 0.2.1
+
+We install the [b3gbi](https://github.com/b-cubed-eu/b3gbi/) (version 0.2.1) and [gcube](https://github.com/b-cubed-eu/gcube) (version 0.0.1) packages.
+
+## Example
 
 The input for the b3gbi package is the location of a CSV file.
 
@@ -69,11 +72,10 @@ insect_data
 The function `process_cube_old()` seems rather strict regarding the column names.
 The new `process_cube()` function is more flexible in this sense.
 
-> For an efficient workflow. These functions should also allow R dataframes as input.
+## Try gcube output as input
 
-Let's create a cube with gcube.
-
-```{r}
+```r
+## Create cube with gcube (4 time points, 1 species)
 # Create a polygon to simulate occurrences
 polygon <- st_polygon(list(cbind(c(5, 10, 8, 2, 3, 5), c(2, 1, 7, 9, 5, 2))))
 
@@ -82,6 +84,7 @@ occurrences_df <- simulate_occurrences(
   plgn = polygon,
   n_time_points = 4,
   seed = 123)
+#> [using unconditional Gaussian simulation]
 
 # Detect occurrences
 detections_df_raw <- sample_observations(
@@ -107,10 +110,10 @@ buffered_observations <- st_buffer(
 
 # Define a grid over spatial extend
 grid_df <- st_make_grid(
-    buffered_observations,
-    square = TRUE,
-    cellsize = c(1.2, 1.2)
-  ) %>%
+  buffered_observations,
+  square = TRUE,
+  cellsize = c(1.2, 1.2)
+) %>%
   st_sf() %>%
   mutate(intersect = as.vector(st_intersects(geometry, polygon,
                                              sparse = FALSE))) %>%
@@ -133,22 +136,19 @@ ggplot() +
   theme_minimal()
 ```
 
-We add a taxon name and save the cube (dataframe) as a CSV file so we can try and load id with `b3gbi::process_cube()`.
+![](https://i.imgur.com/z7eR9pH.png)<!-- -->
 
-```{r}
-data_path <- here::here("data", "raw")
-dir.create(data_path, showWarnings = FALSE, recursive = TRUE)
-
+```
+## Write out csv
 occurrence_cube_df %>%
   st_drop_geometry() %>%
   mutate(species = "species1",
          species_key = "s1") %>%
-  write_delim(file.path(data_path, "gcube_df.csv"), delim = "\t", na = "")
-```
+  write_delim("gcube_df.csv", delim = "\t", na = "")
 
-```{r}
+## Process cube with b3gbi
 gcube_data <- process_cube(
-  cube_name = file.path(data_path, "gcube_df.csv"),
+  cube_name = "gcube_df.csv",
   grid_type = "eea",
   force_gridcode = TRUE,
   cols_year = "time_point",
@@ -157,27 +157,271 @@ gcube_data <- process_cube(
   cols_scientificName = "species",
   cols_minCoordinateUncertaintyInMeters = "min_coord_uncertainty",
   cols_speciesKey = "species_key"
-  )
-
+)
 gcube_data
-```
+#> 
+#> Processed data cube for calculating biodiversity indicators
+#> 
+#> Date Range: 1 - 3 
+#> Single-resolution cube with cell size 10 12 13 14 15 16 19 20 23 26 29 30 36 37 5 7 8 9 1 2 3 4 6 11 17 18 21 22 24 25 27 28 31 32 33 34 35 38 ^2
+#> Number of cells: 38 
+#> Grid reference system: eea 
+#> Coordinate range:
+#> xmin xmax ymin ymax 
+#>   NA   NA   NA   NA 
+#> 
+#> Total number of observations: 70 
+#> Number of species represented: 1 
+#> Number of families represented: Data not present 
+#> 
+#> Kingdoms represented: Data not present 
+#> 
+#> First 10 rows of data (use n = to show more):
+#> 
+#> # A tibble: 114 × 9
+#>     year cellCode   obs scientificName minCoordinateUncertaint…¹ taxonKey xcoord
+#>    <dbl> <chr>    <dbl>          <dbl> <chr>                     <chr>     <dbl>
+#>  1     1 10           1         0.552  species1                  s1           NA
+#>  2     1 12           3         0.0242 species1                  s1           NA
+#>  3     1 13           2         0.0217 species1                  s1           NA
+#>  4     1 14           2         0.233  species1                  s1           NA
+#>  5     1 15           1         0.584  species1                  s1           NA
+#>  6     1 16           2         0.0241 species1                  s1           NA
+#>  7     1 19           1         0.0844 species1                  s1           NA
+#>  8     1 20           2         0.149  species1                  s1           NA
+#>  9     1 23           1         0.353  species1                  s1           NA
+#> 10     1 26           1         0.208  species1                  s1           NA
+#> # ℹ 104 more rows
+#> # ℹ abbreviated name: ¹​minCoordinateUncertaintyInMeters
+#> # ℹ 2 more variables: ycoord <dbl>, resolution <chr>
 
-> Should be able to use a custom grid_type with forced grid code. Now metadata is wrong.
 
-> This code does not work if you have only 1 time point.
-
-We can try and calculate an indicator.
-A spatial indicator will not work since we do not have the right spatial metadata.
-We try a time series indicator.
-
-```{r, eval=FALSE}
+## Calculate an indicator over time
 total_occ_ts(gcube_data)
+#> Error in if (stringr::str_detect(resolution, "km")) {: the condition has length > 1
 ```
 
-```{r, echo=FALSE}
-try(expr = total_occ_ts(gcube_data))
-```
+<sup>Created on 2024-07-09 with [reprex v2.1.0](https://reprex.tidyverse.org)</sup>
 
 This throws an error by `check_cell_size()`.
 
-> Why do we need to know the spatial resolution for a temporal indicator?
+**Challenges**
+
+1.  For an efficient workflow `process_cube()` should also allow R dataframes as input
+     -  Currently, gcube dataframes should be stored as CSV files and their paths used as input for `process_cube()`
+2.  Allow custom grid type in `process_cube()`
+    -  With `force_gridcode = TRUE`
+    -  Now the metadata is incorrect and no indicators can be calculated further upstream
+3. Calculate indicators for custom cubes
+    - I understand visualisation cannot made possible, but at least it should be possible to calculate the indicators since we have the same data type (does not matter if it is eea or mgrs or ..., year or month or time_period or ...)
+    - Visualisation can be done by the user itself
+
+# b3gbi version 0.2.3
+
+Review for [this pull request](https://github.com/b-cubed-eu/b3gbi/pull/25).
+We install the [b3gbi](https://github.com/b-cubed-eu/b3gbi/) (version 0.2.3) and [gcube](https://github.com/b-cubed-eu/gcube) (version 0.4.0) packages.
+
+We create a datacube with **gcube** for 6 species over 6 time points.
+First we define the spatial extend.
+
+```{r}
+# Create a polygon to simulate occurrences
+polygon <- st_polygon(list(cbind(c(500, 1000, 1000, 600, 200, 100, 500),
+                                 c(200, 100, 700, 1000, 900, 500, 200))))
+
+# Create grid for grid designation
+cube_grid <- st_make_grid(
+  st_buffer(polygon, 50),
+  n = c(20, 20),
+  square = TRUE) %>%
+  st_sf()
+
+# Visualise
+ggplot() +
+  geom_sf(data = polygon) +
+  geom_sf(data = cube_grid, alpha = 0) +
+  theme_minimal()
+```
+
+Let's simulate the cube.
+
+```{r}
+# Create dataframe with simulation function arguments
+multi_species_dataset <- tibble(
+    species_range = rep(list(polygon), 6),
+    n_time_points = rep(6, 6),
+    detection_probability = rep(c(0.8, 0.9, 1), 2),
+    coords_uncertainty_meters = rep(c(25, 30, 50), 2),
+    grid = rep(list(cube_grid), 6),
+    seed = 123
+  )
+
+# Add taxonomic hierarchy and generate cube
+map_occ_cube_df <- multi_species_dataset %>%
+  generate_taxonomy(num_genera = 4, num_families = 2, seed = 123) %>%
+  map_simulate_occurrences() %>%
+  map_sample_observations() %>%
+  map_filter_observations() %>%
+  map_add_coordinate_uncertainty() %>%
+  map_grid_designation(nested = FALSE)  %>%
+  select(-all_of(names(multi_species_dataset))) %>%
+  select(-occurrences, -observations_total, -observations)
+
+glimpse(map_occ_cube_df)
+```
+
+This time we do not write out a csv, but we use the dataframe to process the cube.
+
+```{r}
+# Process cube with b3gbi
+gcube_data <- process_cube(
+  cube_name = map_occ_cube_df,
+  grid_type = "custom",
+  cols_year = "time_point",
+  cols_cellCode = "cell_code",
+  cols_occurrences = "n",
+  cols_scientificName = "species",
+  cols_minCoordinateUncertaintyInMeters = "min_coord_uncertainty",
+  cols_kingdom = "kingdom",
+  cols_family = "family",
+  cols_speciesKey = "species_key"
+)
+gcube_data
+```
+
+```{r}
+total_occ_ts(gcube_data)
+```
+
+reprex:
+
+```r
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+library(sf)
+#> Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.3.1; sf_use_s2() is TRUE
+library(gcube)
+library(b3gbi)
+
+# Create a polygon to simulate occurrences
+polygon <- st_polygon(list(cbind(c(500, 1000, 1000, 600, 200, 100, 500),
+                                 c(200, 100, 700, 1000, 900, 500, 200))))
+
+# Create grid for grid designation
+cube_grid <- st_make_grid(
+  st_buffer(polygon, 50),
+  n = c(20, 20),
+  square = TRUE) %>%
+  st_sf()
+
+# Create dataframe with simulation function arguments
+multi_species_dataset <- tibble(
+  plgn = rep(list(polygon), 6),
+  n_time_points = rep(6, 6),
+  detection_probability = rep(c(0.8, 0.9, 1), 2),
+  coords_uncertainty_meters = rep(c(25, 30, 50), 2),
+  grid = rep(list(cube_grid), 6),
+  seed = 123
+)
+
+# Add taxonomic hierarchy and generate cube
+map_occ_cube_df <- multi_species_dataset %>%
+  generate_taxonomy(num_genera = 4, num_families = 2, seed = 123) %>%
+  map_simulate_occurrences() %>%
+  map_sample_observations() %>%
+  map_filter_observations() %>%
+  map_add_coordinate_uncertainty() %>%
+  map_grid_designation(nested = FALSE)  %>%
+  select(-all_of(names(multi_species_dataset))) %>%
+  select(-occurrences, -observations_total, -observations)
+#> [1] [using unconditional Gaussian simulation]
+#> [2] [using unconditional Gaussian simulation]
+#> [3] [using unconditional Gaussian simulation]
+#> [4] [using unconditional Gaussian simulation]
+#> [5] [using unconditional Gaussian simulation]
+#> [6] [using unconditional Gaussian simulation]
+
+# Process cube with b3gbi
+gcube_data <- process_cube(
+  cube_name = map_occ_cube_df,
+  grid_type = "none",
+  cols_year = "time_point",
+  cols_cellCode = "id",
+  cols_occurrences = "n",
+  cols_scientificName = "species",
+  cols_minCoordinateUncertaintyInMeters = "min_coord_uncertainty",
+  cols_kingdom = "kingdom",
+  cols_family = "family",
+  cols_speciesKey = "species_key"
+  
+)
+gcube_data
+#> 
+#> Simulated data cube for calculating biodiversity indicators
+#> 
+#> Date Range: 1 - 5 
+#> Number of cells: 
+#> Grid reference system: none 
+#> Coordinate range:
+#> NULL
+#> 
+#> Total number of observations: 1382 
+#> Number of species represented: 6 
+#> Number of families represented:  
+#> 
+#> Kingdoms represented:  
+#> 
+#> First 10 rows of data (use n = to show more):
+#> 
+#> # A tibble: 12,000 × 13
+#>    scientificName taxonKey genus  family  order class phylum kingdom  year id   
+#>    <chr>             <dbl> <chr>  <chr>   <chr> <chr> <chr>  <chr>   <dbl> <chr>
+#>  1 species1              1 genus3 family1 orde… clas… phylu… kingdo…     1 106  
+#>  2 species1              1 genus3 family1 orde… clas… phylu… kingdo…     1 109  
+#>  3 species1              1 genus3 family1 orde… clas… phylu… kingdo…     1 113  
+#>  4 species1              1 genus3 family1 orde… clas… phylu… kingdo…     1 117  
+#>  5 species1              1 genus3 family1 orde… clas… phylu… kingdo…     1 119  
+#>  6 species1              1 genus3 family1 orde… clas… phylu… kingdo…     1 124  
+#>  7 species1              1 genus3 family1 orde… clas… phylu… kingdo…     1 131  
+#>  8 species1              1 genus3 family1 orde… clas… phylu… kingdo…     1 134  
+#>  9 species1              1 genus3 family1 orde… clas… phylu… kingdo…     1 147  
+#> 10 species1              1 genus3 family1 orde… clas… phylu… kingdo…     1 154  
+#> # ℹ 11,990 more rows
+#> # ℹ 3 more variables: obs <dbl>, minCoordinateUncertaintyInMeters <dbl>,
+#> #   geometry <POLYGON>
+
+# Try calculate time series indicator
+total_occ_ts(gcube_data)
+#> Biodiversity indicator time series
+#> 
+#> Name of indicator: Total Occurrences 
+#> 
+#> Date Range: 1 - 5 
+#> 
+#> Coordinate range represented:
+#> xmin xmax ymin ymax 
+#> "NA" "NA" "NA" "NA" 
+#> 
+#> Number of species represented: 6 
+#> Kingdoms represented: NA 
+#> 
+#> First 10 rows of data (use n = to show more):
+#> 
+#> # A tibble: 5 × 2
+#>    year diversity_val
+#>   <dbl>         <dbl>
+#> 1     1           244
+#> 2     2           326
+#> 3     3           198
+#> 4     4           282
+#> 5     5           332
+```
+
+<sup>Created on 2024-07-26 with [reprex v2.1.0](https://reprex.tidyverse.org)</sup>
