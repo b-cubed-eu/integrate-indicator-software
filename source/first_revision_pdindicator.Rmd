@@ -17,8 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Introduction
-
-## Software repository details
+First review of the code to calculate phylogenetic diversity (PD) for biodiversity data cubes. The plan is to create an R package after resolving the last open issues.
 
 The phylogenetic indicator software is available in the [pdindicatoR](https://github.com/b-cubed-eu/pdindicatoR) GitHub repository.
 The repository was forked to [here](https://github.com/wlangera/pdindicatoR) from this reference point:
