@@ -24,4 +24,11 @@ The repository was forked to [here](https://github.com/wlangera/pdindicatoR) fro
 
 https://github.com/b-cubed-eu/pdindicatoR/commit/f380d6cda82351d3bd83599e63591b9005c344ba
 
+# Remarks
+
+- Should there be 2 repositories?
+
+Currently there are workflow test scripts and functions and datafiles etc. present in the repository.
+It might be beneficial to start with a single clean repo for the R package to maintain a clear overview, and a separate repo with test scripts of the analysis workflows. One or some of these workflows could be useful as a vignette/article in R package repo later on.
+
 
