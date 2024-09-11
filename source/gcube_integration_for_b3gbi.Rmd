@@ -219,7 +219,7 @@ This throws an error by `check_cell_size()`.
 # b3gbi version 0.2.3
 
 Review for [this pull request](https://github.com/b-cubed-eu/b3gbi/pull/25).
-We install the [b3gbi](https://github.com/b-cubed-eu/b3gbi/) (version 0.2.3) and [gcube](https://github.com/b-cubed-eu/gcube) (version 0.3.0) packages.
+We install the [b3gbi](https://github.com/b-cubed-eu/b3gbi/) (version 0.2.3) and [gcube](https://github.com/b-cubed-eu/gcube) (version 0.4.0) packages.
 
 We create a datacube with **gcube** for 6 species over 6 time points.
 First we define the spatial extend.
@@ -248,7 +248,7 @@ Let's simulate the cube.
 ```{r}
 # Create dataframe with simulation function arguments
 multi_species_dataset <- tibble(
-    plgn = rep(list(polygon), 6),
+    species_range = rep(list(polygon), 6),
     n_time_points = rep(6, 6),
     detection_probability = rep(c(0.8, 0.9, 1), 2),
     coords_uncertainty_meters = rep(c(25, 30, 50), 2),
@@ -278,14 +278,13 @@ gcube_data <- process_cube(
   cube_name = map_occ_cube_df,
   grid_type = "custom",
   cols_year = "time_point",
-  cols_cellCode = "id",
+  cols_cellCode = "cell_code",
   cols_occurrences = "n",
   cols_scientificName = "species",
   cols_minCoordinateUncertaintyInMeters = "min_coord_uncertainty",
   cols_kingdom = "kingdom",
   cols_family = "family",
   cols_speciesKey = "species_key"
-
 )
 gcube_data
 ```
