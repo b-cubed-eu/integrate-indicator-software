@@ -18,3 +18,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
+## Software repository details
+
+The phylogenetic indicator software is available in the [pdindicatoR](https://github.com/b-cubed-eu/pdindicatoR) GitHub repository.
+The repository was forked to [here](https://github.com/wlangera/pdindicatoR) from this reference point:
+
+https://github.com/b-cubed-eu/pdindicatoR/commit/f380d6cda82351d3bd83599e63591b9005c344ba
+
+
