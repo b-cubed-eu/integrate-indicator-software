@@ -72,3 +72,5 @@ The structure of the PD indicator is not entirely clear to me.
 - ...
 
 Currently, everything is called PD indicator. Phylogenetic diversity is a broad term which is now used for a very specific case. The functions should get clear names of what they do. E.g. `calc_sum_branchlength_pdind()` instead of `calculate_pd()` and `calc_protected_area_pdind()` instead of `pdindicator()` (maybe some shorter names?).
+
+If the indicator functions are calculated similarly as the [b3gbi indicators](https://github.com/b-cubed-eu/b3gbi/blob/d1c4711177f40bd69a1c373ef9e263f1598700bb/R/calc_map_methods.R#L272)  (`x %>% purrr::map(~compute_evenness_formula(., type))`), we can use the functions for bootstrapping developed in [indicator-uncertainty](https://github.com/b-cubed-eu/indicator-uncertainty) to calculate confidence intervals and perform effect classification.
