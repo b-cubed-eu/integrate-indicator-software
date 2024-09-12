@@ -1,0 +1,75 @@
+---
+title: "First revision phylogenetic indicator software"
+author: "Ward Langeraert"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+---
+
+# Introduction
+First review of the code to calculate phylogenetic diversity (PD) for biodiversity data cubes. The plan is to create an R package after resolving the last open issues.
+
+The phylogenetic indicator software is available in the [pdindicatoR](https://github.com/b-cubed-eu/pdindicatoR) GitHub repository.
+The repository was forked to [here](https://github.com/wlangera/pdindicatoR) from this reference point:
+
+https://github.com/b-cubed-eu/pdindicatoR/commit/f380d6cda82351d3bd83599e63591b9005c344ba
+
+# Remarks
+
+`workflow.R` is the main script.
+
+## General
+
+The structure of the PD indicator is not entirely clear to me.
+
+**1.** There could be multiple PD indicators, e.g.:
+
+- `calc_pd_ind1(cube, tree)`: e.g. sum of branch lengths (currently in `calculate_pd()`)
+- `calc_pd_ind2(cube, tree)`: ...
+- `calc_pd_ind3(cube, tree)`: ...
+- ...
+
+**2.** There could be multiple derived PD indicators. The `f` argument is one of the PD indicator functions above, e.g.:
+
+- `calc_derived_pd_ind1(cube, f, cutoff)`: e.g. the percentage of high PD cells that fall within the boundaries of a protected area (currently in `pdindicator()`)
+- ...
+
+Currently, everything is called PD indicator. Phylogenetic diversity is a broad term which is now used for a very specific case. The functions should get clear names of what they do. E.g. `calc_sum_branchlength_pdind()` instead of `calculate_pd()` and `calc_protected_area_pdind()` instead of `pdindicator()` (maybe some shorter names?).
+
+## Current code
+
+- Use relative paths (https://docs.b-cubed.eu/dev-guide/#r-rproj)
+
+For example, the following code does not run since it is not relative to the R project
+
+```r
+# Load config file
+source("config.R")
+
+# Load functions
+source("./taxonmatch.R")
+```
+
+- The data was not provided so `workflow.R` could not be executed
+
+- Coding style (https://docs.b-cubed.eu/dev-guide/#r-style)
+  - Try to follow the [tidyverse style](https://style.tidyverse.org/) guide as requested by the software develoment guide
+  - This will benefit code clarity for collaboration now and in the future (most important for future self)
+
+## R package development
+
+- Should there be 2 repositories?
+  - Currently there are workflow test scripts and functions and datafiles etc. present in the repository. It might be beneficial to start with a single clean repo for the R package to maintain a clear overview, and a separate repo with test scripts of the analysis workflows. One or some of these workflows could be useful as a vignette/article in R package repo later on.
+
+- Perhaps some functions should be renamed (https://docs.b-cubed.eu/dev-guide/#r-function-naming)
+  - "Use verbs to name functions whenever possible"
+  - Currently, everything is called PD indicator, but in the future more PD indicators might be added. If I understand correctly, there is only 1 indicator calculated at the moment (i.e., sum of branch lengths).
+
+- In the package, we should not have the tidyverse dependency since this contains a lot of packages. Instead use the ones we actually need (dplyr, stringr ...).
+
+- It would be good if the cubes are passed to [b3gbi](https://github.com/b-cubed-eu/b3gbi) `process_cube()` function. This will make the integration of B-Cubed indicator software easy and consistent.
+
+- If the indicator functions are calculated similarly as the [b3gbi indicators](https://github.com/b-cubed-eu/b3gbi/blob/d1c4711177f40bd69a1c373ef9e263f1598700bb/R/calc_map_methods.R#L272)  (`x %>% purrr::map(~compute_evenness_formula(., type))`), we can use the functions for bootstrapping developed in [indicator-uncertainty](https://github.com/b-cubed-eu/indicator-uncertainty) to calculate confidence intervals and perform effect classification.
