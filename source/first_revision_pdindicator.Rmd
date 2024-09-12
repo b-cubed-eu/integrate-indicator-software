@@ -64,4 +64,18 @@ It might be beneficial to start with a single clean repo for the R package to ma
   
 ## General
 
+The structure of the PD indicator is not entirely clear to me.
 
+**1.** There could be multiple PD indicators, e.g.:
+
+- `calc_pd_ind1(cube, tree)`: e.g. sum of branch lengths (currently in `calculate_pd()`)
+- `calc_pd_ind2(cube, tree)`: ...
+- `calc_pd_ind3(cube, tree)`: ...
+- ...
+
+**2.** There could be multiple derived PD indicators. The `f` argument is one of the PD indicator functions above, e.g.:
+
+- `calc_derived_pd_ind1(cube, f, cutoff)`: e.g. the percentage of high PD cells that fall within the boundaries of a protected area (currently in `pdindicator()`)
+- ...
+
+Currently, everything is called PD indicator. The functions should get clear names of what they do. E.g. `calc_sum_branchlength_pdind()` instead of `calculate_pd()` and `calc_protected_area_pdind()` instead of `pdindicator()` (maybe some shorter names?).
