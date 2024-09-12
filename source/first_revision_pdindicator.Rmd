@@ -45,15 +45,15 @@ source("./taxonmatch.R")
 ## R package development
 
 - Should there be 2 repositories?
-
-Currently there are workflow test scripts and functions and datafiles etc. present in the repository.
-It might be beneficial to start with a single clean repo for the R package to maintain a clear overview, and a separate repo with test scripts of the analysis workflows. One or some of these workflows could be useful as a vignette/article in R package repo later on.
+  - Currently there are workflow test scripts and functions and datafiles etc. present in the repository. It might be beneficial to start with a single clean repo for the R package to maintain a clear overview, and a separate repo with test scripts of the analysis workflows. One or some of these workflows could be useful as a vignette/article in R package repo later on.
 
 - Perhaps some functions should be renamed (https://docs.b-cubed.eu/dev-guide/#r-function-naming)
   - "Use verbs to name functions whenever possible"
   - Currently, everything is called PD indicator, but in the future more PD indicators might be added. If I understand correctly, there is only 1 indicator calculated at the moment (i.e., sum of branch lengths).
 
 - In the package, we should not have the tidyverse dependency since this contains a lot of packages. Instead use the ones we actually need (dplyr, stringr ...).
+
+- It would be good if the cubes are passed to [b3gbi](https://github.com/b-cubed-eu/b3gbi) `process_cube()` function. This will make the integration of B-Cubed indicator software easy and consistent.
   
 ## General
 
@@ -71,4 +71,4 @@ The structure of the PD indicator is not entirely clear to me.
 - `calc_derived_pd_ind1(cube, f, cutoff)`: e.g. the percentage of high PD cells that fall within the boundaries of a protected area (currently in `pdindicator()`)
 - ...
 
-Currently, everything is called PD indicator. The functions should get clear names of what they do. E.g. `calc_sum_branchlength_pdind()` instead of `calculate_pd()` and `calc_protected_area_pdind()` instead of `pdindicator()` (maybe some shorter names?).
+Currently, everything is called PD indicator. Phylogenetic diversity is a broad term which is now used for a very specific case. The functions should get clear names of what they do. E.g. `calc_sum_branchlength_pdind()` instead of `calculate_pd()` and `calc_protected_area_pdind()` instead of `pdindicator()` (maybe some shorter names?).
