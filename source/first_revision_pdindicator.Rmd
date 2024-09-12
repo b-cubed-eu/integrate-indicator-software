@@ -26,9 +26,40 @@ https://github.com/b-cubed-eu/pdindicatoR/commit/f380d6cda82351d3bd83599e63591b9
 
 # Remarks
 
+`workflow.R` is the main script.
+
+## Current code
+
+- Use relative paths (https://docs.b-cubed.eu/dev-guide/#r-rproj)
+
+For example, the following code does not run since it is not relative to the R project
+
+```r
+# Load config file
+source("config.R")
+
+# Load functions
+source("./taxonmatch.R")
+```
+
+- The data was not provided so `workflow.R` could not be executed
+
+- Coding style (https://docs.b-cubed.eu/dev-guide/#r-style)
+  - Try to follow the [tidyverse style](https://style.tidyverse.org/) guide as requested by the software develoment guide
+  - This will benefit code clarity for collaboration now and in the future (most important for future self)
+
+
+## R package development
+
 - Should there be 2 repositories?
 
 Currently there are workflow test scripts and functions and datafiles etc. present in the repository.
 It might be beneficial to start with a single clean repo for the R package to maintain a clear overview, and a separate repo with test scripts of the analysis workflows. One or some of these workflows could be useful as a vignette/article in R package repo later on.
+
+- Perhaps some functions should be renamed (https://docs.b-cubed.eu/dev-guide/#r-function-naming)
+  - "Use verbs to name functions whenever possible"
+  - Currently, everything is called PD indicator, but in the future more PD indicators might be added. If I understand correctly, there is only 1 indicator calculated at the moment (i.e., sum of branch lengths).
+  
+## General
 
 
