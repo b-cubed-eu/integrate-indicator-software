@@ -233,7 +233,8 @@ polygon <- st_polygon(list(cbind(c(500, 1000, 1000, 600, 200, 100, 500),
 cube_grid <- st_make_grid(
   st_buffer(polygon, 50),
   n = c(20, 20),
-  square = TRUE) %>%
+  square = TRUE
+) %>%
   st_sf()
 
 # Visualise
@@ -248,13 +249,13 @@ Let's simulate the cube.
 ```{r}
 # Create dataframe with simulation function arguments
 multi_species_dataset <- tibble(
-    species_range = rep(list(polygon), 6),
-    n_time_points = rep(6, 6),
-    detection_probability = rep(c(0.8, 0.9, 1), 2),
-    coords_uncertainty_meters = rep(c(25, 30, 50), 2),
-    grid = rep(list(cube_grid), 6),
-    seed = 123
-  )
+  species_range = rep(list(polygon), 6),
+  n_time_points = rep(6, 6),
+  detection_probability = rep(c(0.8, 0.9, 1), 2),
+  coords_uncertainty_meters = rep(c(25, 30, 50), 2),
+  grid = rep(list(cube_grid), 6),
+  seed = 123
+)
 
 # Add taxonomic hierarchy and generate cube
 map_occ_cube_df <- multi_species_dataset %>%
