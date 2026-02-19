@@ -1,7 +1,10 @@
 <!-- badges: start -->
 ![GitHub](https://img.shields.io/github/license/b-cubed-eu/integrate-indicator-software)
+[![Release](https://img.shields.io/github/release/b-cubed-eu/integrate-indicator-software.svg)](https://github.com/b-cubed-eu/integrate-indicator-software/releases)
 [![repo status](https://www.repostatus.org/badges/latest/inactive.svg)](https://www.repostatus.org/#inactive)
 ![GitHub repo size](https://img.shields.io/github/repo-size/b-cubed-eu/integrate-indicator-software)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18699658.svg)](https://doi.org/10.5281/zenodo.18699658)
+[![funder](https://badgen.net/static/funder/European%20Union/f2a)](https://doi.org/10.3030/101059592)
 <!-- badges: end -->
 
 # Integrate and streamline indicator software
