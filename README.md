@@ -1,6 +1,6 @@
 <!-- badges: start -->
 ![GitHub](https://img.shields.io/github/license/b-cubed-eu/integrate-indicator-software)
-[![repo status](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![repo status](https://www.repostatus.org/badges/latest/inactive.svg)](https://www.repostatus.org/#inactive)
 ![GitHub repo size](https://img.shields.io/github/repo-size/b-cubed-eu/integrate-indicator-software)
 <!-- badges: end -->
 
